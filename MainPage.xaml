@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="personality_quiz_1.MainPage" BackgroundColor="DarkGray">
+
+    <ScrollView>
+        <Grid Padding="20"
+              RowSpacing="15"
+              RowDefinitions="Auto, Auto, *, Auto">
+            
+            <Label Grid.Row="0" x:Name="QuestionLabel" FontSize="24" TextColor="Black" HorizontalOptions="Center" />
+
+            <Image x:Name="QuestionImage"
+                   Grid.Row="1"
+                   HeightRequest="300"
+                   HorizontalOptions="Center"
+                   Aspect="AspectFit"
+                 
+               
+                   />
+
+
+            <CollectionView x:Name="AnswersCollection" Grid.Row="2" SelectionMode="Single" SelectionChanged="OnAnswerSelected" Margin="50, 10, 50, 10">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border Padding="10" Margin="5"  BackgroundColor="Coral"  Stroke="Transparent" StrokeThickness="8" StrokeShape="RoundRectangle 10, 10, 10, 10">
+                            <Label Text="{Binding Text}" FontSize="18" HorizontalOptions="Center"/>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <Button x:Name="NextButton" Grid.Row="3" HeightRequest="50" Text="Next" Clicked="OnNextClicked"
+                    IsVisible="False" CornerRadius="10" FontAttributes="Bold" TextColor="White" 
+                    Background="BlueViolet" Margin="50, 10, 50 ,10"/>
+        </Grid>
+    </ScrollView>
+
+</ContentPage>
