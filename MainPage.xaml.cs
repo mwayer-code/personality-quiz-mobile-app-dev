@@ -15,68 +15,61 @@ public partial class MainPage : ContentPage
 
         var questions = new List<Question>
         {
-            new Question
-            {
+            new() {
                 Id = 1,
-                Text = "I ate breakfast today",
+                Text = "I Ate Breakfast Today",
                 ImageSource = "breakfast.png",
-                Answers = new List<Answer>
-                {
-                    new Answer { Id = 1, Text = "True", Score = 1 },
-                    new Answer { Id = 2, Text = "False", Score = 0 },
-                }
+                Answers =
+                [
+                    new() { Id = 1, Text = "True", Score = 1 },
+                    new() { Id = 2, Text = "False", Score = 0 },
+                ]
             },
-            new Question
-            {
+            new() {
                 Id = 2,
-                Text = "I coded today",
+                Text = "I Coded Today",
                 ImageSource="coding.png",
-                Answers = new List<Answer>
-                {
-                    new Answer { Id = 3, Text = "True", Score = 1 },
-                    new Answer { Id = 4, Text = "False", Score = 0 },
-                }
+                Answers =
+                [
+                    new() { Id = 3, Text = "True", Score = 1 },
+                    new() { Id = 4, Text = "False", Score = 0 },
+                ]
             },
-            new Question
-            {
+            new() {
                 Id = 3,
-                Text = "My favorite sports team is the Milwaukee Bucks",
+                Text = "My Favorite Sports Team is the Milwaukee Bucks",
                 ImageSource="bucks.png",
-                Answers = new List<Answer>
-                {
+                Answers =
+                [
                     new Answer { Id = 5, Text = "True", Score = 1 },
                     new Answer { Id = 6, Text = "False", Score = 0 },
-                }
+                ]
             },
-             new Question
-            {
+             new() {
                 Id = 4,
-                Text = "I drank 2 glasses of water",
+                Text = "I Drank 5 Glasses of Water Today",
                 ImageSource="water.png",
-                Answers = new List<Answer>
-                {
-                    new Answer { Id = 7, Text = "True", Score = 1 },
-                    new Answer { Id = 8, Text = "False", Score = 0 },
-                }
+                Answers =
+                [
+                    new() { Id = 7, Text = "True", Score = 1 },
+                    new() { Id = 8, Text = "False", Score = 0 },
+                ]
             },
-              new Question
-            {
+              new() {
                 Id = 5,
-                Text = "I wear contacts/glasses",
+                Text = "I Wear Contacts/Glasses",
                 ImageSource="glasses.png",
-                Answers = new List<Answer>
-                {
-                    new Answer { Id = 9, Text = "True", Score = 1 },
-                    new Answer { Id = 10, Text = "False", Score = 0 },
-                }
+                Answers =
+                [
+                    new() { Id = 9, Text = "True", Score = 1 },
+                    new() { Id = 10, Text = "False", Score = 0 },
+                ]
             }
         };
 
         _quizService = new QuizService(questions);
         LoadQuestion();
 
-        //Reset the selection in the collection view
-        AnswersCollection.SelectedItem = null;
     }
 
     private void LoadQuestion()
@@ -94,7 +87,6 @@ public partial class MainPage : ContentPage
             QuestionImage.IsVisible = false;
         }
 
-            AnswersCollection.ItemsSource = question.Answers;
         NextButton.IsVisible = false;
     }
 
@@ -120,7 +112,104 @@ public partial class MainPage : ContentPage
     {
         var result = _quizService.CalculateResult();
         await Shell.Current.GoToAsync($"//{nameof(ResultsPage)}?resultText={Uri.EscapeDataString(result.Text)}&imageSource={Uri.EscapeDataString(result.ImageSource)}");
+
     }
+
+    private void OnTrueTapped (object sender, EventArgs e)
+    {
+        var question = _quizService.GetCurrentQuestion();
+        var trueAnswer = question.Answers.FirstOrDefault(a => a.Text == "True");
+
+        if (trueAnswer != null)
+        {
+            ProcessAnswer(trueAnswer);
+        }
+    }
+
+    private void OnFalseTapped (object sender, EventArgs e)
+    {
+        var question = _quizService.GetCurrentQuestion();
+        var falseAnswer = question.Answers.FirstOrDefault(a => a.Text == "False");
+
+        if (falseAnswer != null)
+        {
+            ProcessAnswer(falseAnswer);
+        }
+    }
+
+    private void OnSwipedRight(object sender, SwipedEventArgs e)
+    {
+        var question = _quizService.GetCurrentQuestion();
+        var trueAnswer = question.Answers.FirstOrDefault(a => a.Text == "True");
+
+        if (trueAnswer != null)
+        {
+            ProcessAnswer(trueAnswer);  
+        }
+    }
+
+    private void OnSwipedLeft(object sender, SwipedEventArgs e)
+    {
+        var question = _quizService.GetCurrentQuestion();
+        var falseAnswer = question.Answers.FirstOrDefault(a => a.Text == "False");
+
+        if (falseAnswer != null)
+        {
+            ProcessAnswer(falseAnswer);
+        }
+    }
+
+    private async void ProcessAnswer(Answer selectedAnswer)
+    {
+        var question = _quizService.GetCurrentQuestion();
+        _quizService.SelectAnswer(question.Id, selectedAnswer.Id);
+
+        await ShowAnswerFeedback(selectedAnswer.Text == "True");
+
+        if (_quizService.HasNextQuestion())
+        {
+            NextButton.IsVisible = true;
+        }
+        else
+        {
+            NextButton.IsVisible = false;
+            _ = NavigateToResultsPageAsync();
+        }
+    }
+
+    private CancellationTokenSource _colorResetTokenSource = new CancellationTokenSource();
+
+    private async Task ShowAnswerFeedback(bool isTrue)
+    {
+
+        //cancel pending color resets
+        _colorResetTokenSource?.Cancel();
+        _colorResetTokenSource = new CancellationTokenSource();
+        var token = _colorResetTokenSource.Token;
+
+        Color originalColor = Colors.DarkGray;
+        try
+        {
+            // apply animation
+            await QuestionImage.ScaleTo(0.8, 100);
+            await QuestionImage.ScaleTo(1.0, 100);
+
+            this.BackgroundColor = isTrue ? Colors.LightGreen : Colors.LightCoral;
+
+            //wait for the specified delay w/ cancellation support
+            await Task.Delay(200, token);
+        }
+        catch (TaskCanceledException)
+        {
+            
+        }
+        finally
+        {
+            //Always reset the background color if this specific token was't canceled 
+            this.BackgroundColor = originalColor;
+        }
+    }
+
 
 
     private void OnNextClicked(object sender, EventArgs e)
@@ -146,7 +235,6 @@ public partial class MainPage : ContentPage
         {
             _quizService.Reset();
             LoadQuestion();
-            AnswersCollection.SelectedItem = null;
         }
     }
 }

@@ -17,7 +17,7 @@
        />
         
         <Button Grid.Row="2" Text="Retake Quiz" Clicked="OnRetakeClicked"
-                BackgroundColor="AliceBlue" Background="BlueViolet"
-                CornerRadius="10" HeightRequest="50" TextColor="white" />
+                BackgroundColor="AliceBlue" Background="DodgerBlue"
+                CornerRadius="0" HeightRequest="60" TextColor="white" />
     </Grid>
 </ContentPage>

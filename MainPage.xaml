@@ -1,38 +1,80 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="personality_quiz_1.MainPage" BackgroundColor="DarkGray">
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            x:Class="personality_quiz_1.MainPage" BackgroundColor="DarkGray">
 
-    <ScrollView>
-        <Grid Padding="20"
-              RowSpacing="15"
-              RowDefinitions="Auto, Auto, *, Auto">
-            
-            <Label Grid.Row="0" x:Name="QuestionLabel" FontSize="24" TextColor="Black" HorizontalOptions="Center" />
+   <ScrollView>
+       <Grid Padding="20"
+             RowSpacing="15"
+             RowDefinitions="Auto, Auto, Auto, Auto">
 
-            <Image x:Name="QuestionImage"
-                   Grid.Row="1"
-                   HeightRequest="300"
-                   HorizontalOptions="Center"
-                   Aspect="AspectFit"
-                 
-               
-                   />
+           <Label Grid.Row="0" x:Name="QuestionLabel" FontSize="24" TextColor="Black" HorizontalOptions="Center" />
 
+           <Grid Grid.Row="1">
+               <Border BackgroundColor="Transparent"
+                       Stroke="Transparent"
+                       Padding="0">
+                   <Border.GestureRecognizers>
+                       <SwipeGestureRecognizer Direction="Left" Swiped="OnSwipedLeft" />
+                       <SwipeGestureRecognizer Direction="Right" Swiped="OnSwipedRight" />
+                   </Border.GestureRecognizers>
 
-            <CollectionView x:Name="AnswersCollection" Grid.Row="2" SelectionMode="Single" SelectionChanged="OnAnswerSelected" Margin="50, 10, 50, 10">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Border Padding="10" Margin="5"  BackgroundColor="Coral"  Stroke="Transparent" StrokeThickness="8" StrokeShape="RoundRectangle 10, 10, 10, 10">
-                            <Label Text="{Binding Text}" FontSize="18" HorizontalOptions="Center"/>
-                        </Border>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-            <Button x:Name="NextButton" Grid.Row="3" HeightRequest="50" Text="Next" Clicked="OnNextClicked"
-                    IsVisible="False" CornerRadius="10" FontAttributes="Bold" TextColor="White" 
-                    Background="BlueViolet" Margin="50, 10, 50 ,10"/>
-        </Grid>
-    </ScrollView>
+                   <Image x:Name="QuestionImage"
+                          HeightRequest="300"
+                          HorizontalOptions="Center"
+                          Aspect="AspectFit" />
+               </Border>
+           </Grid>
+
+           <Grid Grid.Row="2" HorizontalOptions="Center">
+               <Grid.ColumnDefinitions>
+                   <ColumnDefinition Width="*" />
+                   <ColumnDefinition Width="*" />
+               </Grid.ColumnDefinitions>
+
+               <Border Grid.Column="0" 
+                       Stroke="Transparent"
+                       BackgroundColor="LightCoral"
+                       Padding="20"
+                       Margin="10"
+                       >
+                   <Border.GestureRecognizers>
+                       <TapGestureRecognizer Tapped="OnFalseTapped" />
+                   </Border.GestureRecognizers>
+                   <Label Text="Swipe Left or Tap for False"
+                          TextColor="White"
+                          FontSize="18"
+                          HorizontalOptions="Center" />
+               </Border>
+
+               <Border Grid.Column="1"
+                       Stroke="Transparent"
+                       BackgroundColor="LightGreen"
+                       Padding="20"
+                       Margin="10"
+                       >
+                   <Border.GestureRecognizers>
+                       <TapGestureRecognizer Tapped="OnTrueTapped" />
+                   </Border.GestureRecognizers>
+                   <Label Text="Swipe Right or Tap for True"
+                          TextColor="White"
+                          FontSize="18"
+                          HorizontalOptions="Center" />
+               </Border>
+           </Grid>
+
+           <Button x:Name="NextButton" 
+                  Grid.Row="3" 
+                  HeightRequest="60" 
+                  Text="Next" 
+                  Clicked="OnNextClicked"
+                  IsVisible="False" 
+                  CornerRadius="0"
+                  FontAttributes="Bold" 
+                  TextColor="White" 
+                  Background="BlueViolet" 
+                  Margin="50, 10, 50, 10"/>
+       </Grid>
+   </ScrollView>
 
 </ContentPage>

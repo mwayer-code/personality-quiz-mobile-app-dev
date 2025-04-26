@@ -54,17 +54,17 @@ namespace personality_quiz_1.Service
             if (totalScore >= 4)
             {
                 imageSource = "ironman.png";
-                message = "Your personality is Ironman";
+                message = "Your Personality is Ironman";
             }
             else if (totalScore >= 2)
             {
                 imageSource = "spiderman.png";
-                message = "Your personality is Spiderman";
+                message = "Your Personality is Spiderman";
             }
             else
             {
                 imageSource ="batman.png";// Correct usage of ImageSource
-                message = "Your personality is Batman";
+                message = "Your Personality is Batman";
             }
 
             return new QuizResult
